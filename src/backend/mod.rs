@@ -1,4 +1,4 @@
-pub mod cryfs;
+// pub mod cryfs;
 pub mod gocryptfs;
 
 use std::path::PathBuf;

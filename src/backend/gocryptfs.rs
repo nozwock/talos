@@ -52,10 +52,10 @@ impl Backend for GoCryptFs {
     }
 
     fn create_vault(&self, cfg: &VaultConfig, password: &str) -> anyhow::Result<()> {
-        let mut child = Command::new(self.command_path)
+        let mut child = Command::new(&self.command_path)
             .stdin(Stdio::piped())
             .args(["--init", "-q", "--"])
-            .arg(cfg.vault_dir)
+            .arg(&cfg.vault_dir)
             .spawn()?;
 
         child
@@ -76,11 +76,11 @@ impl Backend for GoCryptFs {
     }
 
     fn mount_vault(&self, cfg: &VaultConfig, password: &str) -> anyhow::Result<()> {
-        let mut child = Command::new(self.command_path)
+        let mut child = Command::new(&self.command_path)
             .stdin(Stdio::piped())
             .args(["-q", "--"])
-            .arg(cfg.vault_dir)
-            .arg(cfg.mount_dir)
+            .arg(&cfg.vault_dir)
+            .arg(&cfg.mount_dir)
             .spawn()?;
 
         child
@@ -101,9 +101,9 @@ impl Backend for GoCryptFs {
     }
 
     fn close_vault(&self, cfg: &VaultConfig) -> anyhow::Result<()> {
-        let status = Command::new(self.fusermount_path)
+        let status = Command::new(&self.fusermount_path)
             .arg("-u")
-            .arg(cfg.mount_dir)
+            .arg(&cfg.mount_dir)
             .output()?
             .status;
 
@@ -116,9 +116,4 @@ impl Backend for GoCryptFs {
 
         Ok(())
     }
-}
-
-inventory::collect!(GoCryptFs);
-inventory::submit! {
-    GoCryptFs::default() // todo: Later, create the struct from a config
 }
